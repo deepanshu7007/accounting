@@ -15,24 +15,23 @@ import javax.swing.*;
 
 public class addPanel extends JFrame {
 
-    private JButton add = new JButton("ADD");
-    private JButton back = new JButton("BACK");
-    private JTextField nameField;
-    private JTextField priorityField;
-    private JTextField aliasField;
+    JButton add = new JButton("ADD");
+    JButton back = new JButton("BACK");
+    JTextField nameField,priorityField, aliasField,groupField;
     private ResultSet rs;
+    JComboBox jc;
     private JLabel Title = new JLabel();
-
-    private void groupMaster() {
+    void groupMaster() {
         Title.setText("GROUP MASTER");
-        JLabel type = new JLabel("Type");
-        JComboBox jc = new JComboBox();
+        jc = new JComboBox();
         jc.addItem("ASSERTS");
         jc.addItem("LIABILITY");
         jc.addItem("INCOME");
         jc.addItem("EXPENDITURE");
-        add(type);
+        add(new JLabel("Type"));
         add(jc);
+        jc.setName("TYPE");
+        revalidate();
         add.addActionListener((ActionEvent e) -> {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -58,7 +57,7 @@ public class addPanel extends JFrame {
     void subGroupMaster() throws ClassNotFoundException, SQLException {
 
         Title.setText("SUB GROUP MASTER");
-        JTextField groupField = new JTextField();
+        groupField = new JTextField();
         groupField.setColumns(20);
         JLabel groupName = new JLabel("Group-Name:");
         groupField.setEnabled(false);
@@ -91,16 +90,16 @@ public class addPanel extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                     Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/accountingdatabase", "root", "Anshu12345$");
-                    PreparedStatement pstmt= con.prepareStatement("INSERT INTO SUBGROUPMASTER(NAME,ALIAS,PRIORITY,GROUP_ALIAS) VALUES (?,?,?,?);");
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/accountingdatabase", "root", "Anshu12345$");
+                    PreparedStatement pstmt = con.prepareStatement("INSERT INTO SUBGROUPMASTER(NAME,ALIAS,PRIORITY,GROUP_ALIAS) VALUES (?,?,?,?);");
                     pstmt.setString(1, nameField.getText());
                     pstmt.setString(2, aliasField.getText());
                     pstmt.setString(3, priorityField.getText());
                     pstmt.setString(4, groupField.getText());
-                    
-                    int i=pstmt.executeUpdate();  
-System.out.println(i+" records inserted");  
+
+                    int i = pstmt.executeUpdate();
+                    System.out.println(i + " records inserted");
                     JOptionPane.showMessageDialog(rootPane, "Inserted Successfull");
                 } catch (SQLException ex) {
                     System.out.println(ex);
@@ -118,16 +117,15 @@ System.out.println(i+" records inserted");
         add(new JLabel("Head:"));
         JTextField head = new JTextField(20);
         add(head);
-        String labelNames[] = {"Businerss-Name", "Address", "City", "State", "Pincode", "Phone-Number", "E-Mail", "Overdraft","PAN-NO" ,"TIN", "GST-IN","User-Name"};
+        String labelNames[] = {"Businerss-Name", "Address", "City", "State", "Pincode", "Phone-Number", "E-Mail", "Overdraft", "PAN-NO", "TIN", "GST-IN", "User-Name"};
         JLabel l[] = new JLabel[labelNames.length];
         JLabel obLabel = new JLabel("Opening-Balance");
         JTextField ob = new JTextField(10);
         ob.setText("");
         JTextField j[] = new JTextField[labelNames.length];
         for (int i = 0; i < labelNames.length; i++) {
-            j[i] = new JTextField();
+            j[i] = new JTextField(20);
             j[i].setName(labelNames[i]);
-            j[i].setColumns(20);
             l[i] = new JLabel(labelNames[i]);
             add(l[i]);
             add(j[i]);
@@ -137,9 +135,9 @@ System.out.println(i+" records inserted");
         add(new JLabel("Comment:"));
         JTextArea jt;
         add(jt = new JTextArea(5, 20));
-         Class.forName("com.mysql.jdbc.Driver");
-                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/accountingdatabase", "root", "Anshu12345$");
-                    final Statement stmt = con.createStatement();
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/accountingdatabase", "root", "Anshu12345$");
+        final Statement stmt = con.createStatement();
         head.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent e) {
                 try {
@@ -152,7 +150,7 @@ System.out.println(i+" records inserted");
                     j.setFocusable(false);
                     j.addMouseListener(new MouseAdapter() {
                         public void mouseClicked(MouseEvent me) {
-                            if (me.getClickCount() == 2) {   
+                            if (me.getClickCount() == 1) {
                                 // to detect doble click events
                                 JTable target = (JTable) me.getSource();
                                 int row = target.getSelectedRow(); // select a row                    // select a column
@@ -177,28 +175,25 @@ System.out.println(i+" records inserted");
             }
 
         });
-add.addActionListener((ActionEvent evt) -> {
-                    try {
-                        System.out.println("Hello World");
-                        String statement = "'"+nameField.getText() + "','" + aliasField.getText() + "','";
-                        for (int i = 0; i < labelNames.length; i++) {
-                            statement = statement + j[i].getText() + "','";
-                        }
-                        statement = statement + head.getText() + "','" + jt.getText() + "'," + String.format("%.2f", Double.parseDouble(ob.getText()));
-                        int val = stmt.executeUpdate("INSERT INTO ACCOUNTMASTER (NAME,ALIAS,B_NAME,ADDRESS,CITY,STATE,PINCODE,PHONE,E_MAIL,OD_NAME,PANNUM,TANNUM,GSTNUM,USER_IN,SUBGROUP,COMMENT,OP_BAL) VALUES (" + statement + ");");
-                        if(val==1)
-                        {
-                            JOptionPane.showMessageDialog(rootPane, "Record Successfully Inserted");
-                        }
-                        else
-                        {
-                            
-                        }
-                        System.out.println(val);
-                    } catch (Exception ev) {
-                        JOptionPane.showMessageDialog(rootPane, "Something went wrong(PLEASE CHECK ALIAS-NAME)");
-                    }
-                });
+        add.addActionListener((ActionEvent evt) -> {
+            try {
+                System.out.println("Hello World");
+                String statement = "'" + nameField.getText() + "','" + aliasField.getText() + "','";
+                for (int i = 0; i < labelNames.length; i++) {
+                    statement = statement + j[i].getText() + "','";
+                }
+                statement = statement + head.getText() + "','" + jt.getText() + "'," + String.format("%.2f", Double.parseDouble(ob.getText()));
+                int val = stmt.executeUpdate("INSERT INTO ACCOUNTMASTER (NAME,ALIAS,B_NAME,ADDRESS,CITY,STATE,PINCODE,PHONE,E_MAIL,OD_NAME,PANNUM,TANNUM,GSTNUM,USER_IN,SUBGROUP,COMMENT,OP_BAL) VALUES (" + statement + ");");
+                if (val == 1) {
+                    JOptionPane.showMessageDialog(rootPane, "Record Successfully Inserted");
+                } else {
+
+                }
+                System.out.println(val);
+            } catch (Exception ev) {
+                JOptionPane.showMessageDialog(rootPane, "Something went wrong(PLEASE CHECK ALIAS-NAME)");
+            }
+        });
     }
 
     addPanel() throws SQLException, ClassNotFoundException {
@@ -220,8 +215,8 @@ add.addActionListener((ActionEvent evt) -> {
         add(Alias);
         add(aliasField);
 //        groupMaster();
-        subGroupMaster();
-//        accountMaster();
+//        subGroupMaster();
+        accountMaster();
         add(back);
         add(add);
         setLayout(new FlowLayout(FlowLayout.LEFT, 30, 20));

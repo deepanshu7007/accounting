@@ -1,67 +1,43 @@
 package accountingproject;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.*;
-import java.awt.event.*;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-class modifyPanel extends JFrame  {
-    JRadioButton rb1, rb2;
-    JButton b;
-JTextField text = new JTextField(20);
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-    modifyPanel() throws ClassNotFoundException, SQLException {
-       
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/accountingdatabase", "root", "Anshu12345$");
-        final Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT NAME,ALIAS FROM SUBGROUPMASTER");
-        rb1 = new JRadioButton("NAME");
-        rb1.setSelected(true);
-        rb2 = new JRadioButton("ALIAS");
-        JTable table = new JTable(BasePanels.buildTableModel(rs));
-        table.setSize(200,200);
-        JScrollPane js= new JScrollPane(table);
-        js.setSize(200, 200);
-        ButtonGroup bg = new ButtonGroup();
-        bg.add(rb1);
-        bg.add(rb2);
-        table.changeSelection(0, 0, false, false);
-        table.setRowSelectionAllowed(true);
-        table.setSelectionBackground(Color.RED);
-        add(rb1);
-        add(rb2);
-        add(text);
-        addWindowListener( new WindowAdapter() {
-    public void windowOpened( WindowEvent e ){
-        text.requestFocus();
-    }
-});
-        add(js);
-        setSize(300, 300);
-        setLayout(new FlowLayout(FlowLayout.CENTER));
-        setVisible(true);
-        text.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                System.out.println(e.getKeyChar());
-            }
+public class modifyPanel {
 
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        final String NAME_OF_TABLE = "GROUPMASTER";
+        addPanel panel = new addPanel();
+        panel.groupMaster();
+        searchPanel sp = new searchPanel(NAME_OF_TABLE);
+        sp.table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                
-            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                try {
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/accountingdatabase", "root", "Anshu12345$");
+                    String query = "SELECT * FROM " + NAME_OF_TABLE + " WHERE ALIAS=?";
+                    PreparedStatement pstmt = con.prepareStatement(query);
+                    pstmt.setString(1, sp.table.getValueAt(sp.table.getSelectedRow(), sp.table.getSelectedColumn()).toString());
+                    ResultSet rs = pstmt.executeQuery();
+                    while (rs.next()) {
+                        panel.nameField.setText(rs.getString("NAME"));
+                        panel.aliasField.setText(rs.getString("ALIAS"));
+                        panel.jc.setSelectedItem(rs.getString("HEAD_ALIAS"));
+                        panel.priorityField.setText(rs.getString("PRIORITY"));
+                    }
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(searchPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(searchPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-            @Override
-            public void keyReleased(KeyEvent e) {
-                
             }
         });
-    }
-    public static void main(String args[]) throws ClassNotFoundException, SQLException {
-        new modifyPanel();
     }
 }
