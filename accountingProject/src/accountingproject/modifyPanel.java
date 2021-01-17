@@ -15,6 +15,7 @@ public class modifyPanel {
         addPanel panel = new addPanel();
         panel.subGroupMaster();
         searchPanel sp = new searchPanel(NAME_OF_TABLE);
+        panel.revalidate();
         sp.table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -27,13 +28,14 @@ public class modifyPanel {
                     ResultSet rs = pstmt.executeQuery();
                     
                     while (rs.next()) {
-                        for(int i=1;i<rs.getMetaData().getColumnCount();i++)
+                        for(int i=1;i<=rs.getMetaData().getColumnCount();i++)
                         {
                             panel.subGroupField.get(i-1).setText(rs.getString(i));
-                            panel.revalidate();
+                            
                         }
                     }
-                    panel.subGroupField.get(3).setText("Tatti");
+                    panel.add.setText("EDIT");
+//                    panel.subGroupField.get(3).setText("Tatti");
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(searchPanel.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
