@@ -9,19 +9,22 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
 public class addPanel extends JFrame {
 
-    JButton add = new JButton("ADD");
-    JButton back = new JButton("BACK");
-    JTextField nameField,priorityField, aliasField,groupField;
+    private JButton add = new JButton("ADD");
+    private JButton back = new JButton("BACK");
+    private JTextField nameField,priorityField, aliasField;
+    ArrayList<JTextField> groupFields,subGroupField,AccountField;
     private ResultSet rs;
     JComboBox jc;
     private JLabel Title = new JLabel();
     void groupMaster() {
+        groupFields = new ArrayList<>();
         Title.setText("GROUP MASTER");
         jc = new JComboBox();
         jc.addItem("ASSERTS");
@@ -30,8 +33,11 @@ public class addPanel extends JFrame {
         jc.addItem("EXPENDITURE");
         add(new JLabel("Type"));
         add(jc);
-        jc.setName("TYPE");
+        jc.setName("");
         revalidate();
+        groupFields.add(nameField);
+        groupFields.add(aliasField);
+        groupFields.add(priorityField);
         add.addActionListener((ActionEvent e) -> {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -55,9 +61,9 @@ public class addPanel extends JFrame {
     }
 
     void subGroupMaster() throws ClassNotFoundException, SQLException {
-
+        subGroupField = new ArrayList<>();
         Title.setText("SUB GROUP MASTER");
-        groupField = new JTextField();
+        JTextField groupField = new JTextField();
         groupField.setColumns(20);
         JLabel groupName = new JLabel("Group-Name:");
         groupField.setEnabled(false);
@@ -73,6 +79,10 @@ public class addPanel extends JFrame {
             }
         };
         j.setFocusable(false);
+        subGroupField.add(nameField);
+        subGroupField.add(aliasField);
+        subGroupField.add(priorityField);
+        subGroupField.add(groupField);
         j.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent me) {
                 if (me.getClickCount() == 2) {     // to detect doble click events
@@ -117,6 +127,7 @@ public class addPanel extends JFrame {
         add(new JLabel("Head:"));
         JTextField head = new JTextField(20);
         add(head);
+        AccountField.add(head);
         String labelNames[] = {"Businerss-Name", "Address", "City", "State", "Pincode", "Phone-Number", "E-Mail", "Overdraft", "PAN-NO", "TIN", "GST-IN", "User-Name"};
         JLabel l[] = new JLabel[labelNames.length];
         JLabel obLabel = new JLabel("Opening-Balance");
@@ -125,6 +136,7 @@ public class addPanel extends JFrame {
         JTextField j[] = new JTextField[labelNames.length];
         for (int i = 0; i < labelNames.length; i++) {
             j[i] = new JTextField(20);
+            AccountField.add(j[i]);
             j[i].setName(labelNames[i]);
             l[i] = new JLabel(labelNames[i]);
             add(l[i]);
@@ -216,7 +228,7 @@ public class addPanel extends JFrame {
         add(aliasField);
 //        groupMaster();
 //        subGroupMaster();
-        accountMaster();
+//        accountMaster();
         add(back);
         add(add);
         setLayout(new FlowLayout(FlowLayout.LEFT, 30, 20));

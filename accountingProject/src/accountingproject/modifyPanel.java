@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 public class modifyPanel {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        final String NAME_OF_TABLE = "GROUPMASTER";
+        final String NAME_OF_TABLE = "SUBGROUPMASTER";
         addPanel panel = new addPanel();
-        panel.groupMaster();
+        panel.subGroupMaster();
         searchPanel sp = new searchPanel(NAME_OF_TABLE);
         sp.table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -25,12 +25,15 @@ public class modifyPanel {
                     PreparedStatement pstmt = con.prepareStatement(query);
                     pstmt.setString(1, sp.table.getValueAt(sp.table.getSelectedRow(), sp.table.getSelectedColumn()).toString());
                     ResultSet rs = pstmt.executeQuery();
+                    
                     while (rs.next()) {
-                        panel.nameField.setText(rs.getString("NAME"));
-                        panel.aliasField.setText(rs.getString("ALIAS"));
-                        panel.jc.setSelectedItem(rs.getString("HEAD_ALIAS"));
-                        panel.priorityField.setText(rs.getString("PRIORITY"));
+                        for(int i=1;i<rs.getMetaData().getColumnCount();i++)
+                        {
+                            panel.subGroupField.get(i-1).setText(rs.getString(i));
+                            panel.revalidate();
+                        }
                     }
+                    panel.subGroupField.get(3).setText("Tatti");
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(searchPanel.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
