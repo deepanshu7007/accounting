@@ -220,27 +220,29 @@ if(s.equals("ITEMMASTER"))
                 try {
                     System.out.println("OutputText");
                 String s = "UPDATE ITEMMASTER SET NAME=?,GST=?,TAXPERC=?,HSNCODE=?,TYPE=?,INVENTORY=?,DESCRIPTION=?,DIVISION=?,CATAGORY=?,P_RATE=?,S_RATE=?,MRP=?,MARGIN=?,CODEBELONGS=?,SALESFACTOR=?,UNIT_1=?,UNIT_2=?,CONVERSIONFACT=? where ALIAS=?";
-                PreparedStatement st = con.prepareStatement(s);
+              
+PreparedStatement st = con.prepareStatement(s);
                 
                 st.setString(1,panel.ItemFields.get(0).getText());
                 st.setString(2,panel.ItemFields.get(1).getText());
                 st.setString(3,panel.ItemFields.get(2).getText());
-                st.setString(4,panel.ItemFields.get(3).getText());
-                st.setString(5,"");
-                st.setString(6,"");
-                st.setString(7,panel.ItemFields.get(4).getText());
-                st.setString(8,panel.ItemFields.get(5).getText());
-                st.setString(9,panel.ItemFields.get(6).getText());
-                st.setString(10,panel.ItemFields.get(7).getText());
-                st.setString(11,panel.ItemFields.get(8).getText());
-                st.setString(12,panel.ItemFields.get(9).getText());
-                st.setString(13,panel.ItemFields.get(10).getText());
-                st.setString(14,panel.ItemFields.get(11).getText());
-                st.setString(15,panel.ItemFields.get(12).getText());
-                st.setString(16,panel.ItemFields.get(13).getText());
-                st.setString(17,panel.ItemFields.get(14).getText());
-                st.setString(18,panel.ItemFields.get(15).getText());
-                st.setString(19,panel.ItemFields.get(16).getText());
+                st.setString(4,panel.ItemFields.get(4).getText());
+                st.setString(7,panel.ItemFields.get(5).getText());
+                st.setString(8,panel.ItemFields.get(6).getText());
+                st.setString(9,panel.ItemFields.get(7).getText());
+                st.setString(10,panel.ItemFields.get(8).getText());
+                st.setString(11,panel.ItemFields.get(9).getText());
+                st.setString(12,panel.ItemFields.get(10).getText());
+                st.setString(13,panel.ItemFields.get(11).getText());
+                st.setString(14,panel.ItemFields.get(12).getText());
+                st.setString(15,panel.ItemFields.get(13).getText());
+                st.setString(16,panel.ItemFields.get(14).getText());
+                st.setString(17,panel.ItemFields.get(15).getText());
+                st.setString(18,panel.ItemFields.get(16).getText());
+                st.setString(19,panel.ItemFields.get(3).getText());
+                st.setString(5,panel.typeItem.getSelectedItem().toString());
+                st.setString(6,panel.InventoryItem.getSelectedItem().toString());
+                System.out.println(panel.typeItem.getSelectedItem().toString());
                 st.executeUpdate();
             } catch (SQLException ex) {
                 Logger.getLogger(modifyPanel.class.getName()).log(Level.SEVERE, null, ex);

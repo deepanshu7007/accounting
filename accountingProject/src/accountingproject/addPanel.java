@@ -15,14 +15,18 @@ import java.util.logging.Logger;
 import javax.swing.*;
 
 public class addPanel extends JFrame {
-
-    private JButton add = new JButton("ADD");
+    JLabel Priority= new JLabel("Priority");;
+    JButton add = new JButton("ADD");
     private JButton back = new JButton("BACK");
-    private JTextField nameField,priorityField, aliasField;
-    ArrayList<JTextField> groupFields,subGroupField,AccountField;
+    private JTextField nameField, priorityField, aliasField;
+    ArrayList<JTextField> groupFields, subGroupField, AccountField, ItemFields;
+    JComboBox typeItem,InventoryItem;
+    String country[]={"YES","NO"};
+    JComboBox InvtryCombo = new JComboBox(country);
     private ResultSet rs;
     JComboBox jc;
     private JLabel Title = new JLabel();
+JTextField numberOfDays;
     void groupMaster() {
         groupFields = new ArrayList<>();
         Title.setText("GROUP MASTER");
@@ -34,7 +38,9 @@ public class addPanel extends JFrame {
         add(new JLabel("Type"));
         add(jc);
         jc.setName("");
-        revalidate();
+        
+        add(Priority);
+        add(priorityField);
         groupFields.add(nameField);
         groupFields.add(aliasField);
         groupFields.add(priorityField);
@@ -69,10 +75,12 @@ public class addPanel extends JFrame {
         groupField.setEnabled(false);
         add(groupName);
         add(groupField);
+        add(Priority);
+        add(priorityField);
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/accountingdatabase", "root", "Anshu12345$");
         Statement stmt = con.createStatement();
-        rs = stmt.executeQuery("select NAME,ALIAS from subgroupmaster");
+        rs = stmt.executeQuery("select NAME,ALIAS from groupmaster");
         JTable j = new JTable(BasePanels.buildTableModel(rs)) {
             public boolean editCellAt(int row, int column, java.util.EventObject e) {
                 return false;
@@ -123,10 +131,12 @@ public class addPanel extends JFrame {
     }
 
     void accountMaster() throws ClassNotFoundException, SQLException {
-        priorityField.setEnabled(false);
+        AccountField = new ArrayList<>();
         add(new JLabel("Head:"));
         JTextField head = new JTextField(20);
         add(head);
+        AccountField.add(nameField);
+        AccountField.add(aliasField);
         AccountField.add(head);
         String labelNames[] = {"Businerss-Name", "Address", "City", "State", "Pincode", "Phone-Number", "E-Mail", "Overdraft", "PAN-NO", "TIN", "GST-IN", "User-Name"};
         JLabel l[] = new JLabel[labelNames.length];
@@ -144,6 +154,7 @@ public class addPanel extends JFrame {
         }
         add(obLabel);
         add(ob);
+        AccountField.add(ob);
         add(new JLabel("Comment:"));
         JTextArea jt;
         add(jt = new JTextArea(5, 20));
@@ -152,7 +163,8 @@ public class addPanel extends JFrame {
         final Statement stmt = con.createStatement();
         head.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent e) {
-                try {
+                try 
+                {
                     ResultSet rs = stmt.executeQuery("SELECT NAME,ALIAS FROM SUBGROUPMASTER");
                     JTable j = new JTable(BasePanels.buildTableModel(rs)) {
                         public boolean editCellAt(int row, int column, java.util.EventObject e) {
@@ -178,14 +190,9 @@ public class addPanel extends JFrame {
                     Logger.getLogger(addPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
             @Override
             public void focusLost(FocusEvent e) {
-//                remove(panel); 
-//                repaint();
-//                revalidate(); 
             }
-
         });
         add.addActionListener((ActionEvent evt) -> {
             try {
@@ -207,11 +214,64 @@ public class addPanel extends JFrame {
             }
         });
     }
+    
+    void divisionMaster()
+    {
+        add(new JLabel("Number of days:"));
+        numberOfDays = new JTextField(20);
+        add(numberOfDays);
+        add(new JLabel("Inventory"));
+        
+        
+        add(InvtryCombo);
+    }
+    
+    void catagoryMaster()
+    {
+        
+    }
+    
+    void unitMaster()
+    {
+        
+    }
 
-    addPanel() throws SQLException, ClassNotFoundException {
+    void itemMaster()
+    {
+        System.out.println("Entered in ITEM Master");
+        getContentPane().removeAll();
+        Itempanel1 ip=new Itempanel1();
+        this.ItemFields = ip.ItemFields;
+        this.InventoryItem = ip.InventoryField;
+        this.typeItem = ip.TypeField;
+        add(ip);
+        setLayout(new FlowLayout(FlowLayout.LEFT));
+        add.addActionListener((ActionEvent evt) -> {
+            try {
+                System.out.println("Hello world");
+                Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/accountingdatabase", "root", "Anshu12345$");
+        final Statement stmt = con.createStatement();
+                String statement = "'"+ip.AliasField.getText()+"','"+ip.NameField.getText()+"','"+ip.HsnField.getText()+"','"+ip.DescField.getText()+"','"+ip.PurchaseField.getText()+"','"+ip.SalesField.getText()+"','"+ip.MrpField.getText()+"','"+ip.Unit1Field.getText()+"','"+ip.Unit2Field.getText()+"','"+ip.ConvFactField.getText()+"','"+ip.GstField_1.getText()+"','"+ip.TaxField_1.getText()+"','"+ip.TypeField.getSelectedItem()+"','"+ip.InventoryField.getSelectedItem()+"','"+ip.DivisionField.getText()+"','"+ip.CatagoryField.getText()+"','"+ip.MarginField.getText()+"','"+ip.CodeBelField.getText()+"','"+ip.SalesFactField.getText()+"'";
+                int val = stmt.executeUpdate("INSERT INTO ITEMMASTER (ALIAS,NAME,HSNCODE,DESCRIPTION,P_RATE,S_RATE,MRP,UNIT_1,UNIT_2,CONVERSIONFACT,GST,TAXPERC,TYPE,INVENTORY,DIVISION,CATAGORY,MARGIN,CODEBELONGS,SALESFACTOR) VALUES (" + statement + ");");
+                if (val == 1) {
+                    JOptionPane.showMessageDialog(rootPane, "Record Successfully Inserted");
+                } else {
+
+                }
+                System.out.println(val);
+            } catch (SQLException ev) {
+                System.out.println(ev);
+                JOptionPane.showMessageDialog(rootPane, "Something went wrong(PLEASE CHECK ALIAS-NAME)");
+            
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(addPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+    }
+    addPanel(String s) throws SQLException, ClassNotFoundException {
         JLabel Name = new JLabel("Name");
         Name.setForeground(Color.red);
-        JLabel Priority = new JLabel("Priority");
         JLabel Alias = new JLabel("Alias");
         nameField = new JTextField();
         nameField.setColumns(20);
@@ -222,21 +282,30 @@ public class addPanel extends JFrame {
         add(Title);
         add(Name);
         add(nameField);
-        add(Priority);
-        add(priorityField);
         add(Alias);
         add(aliasField);
-//        groupMaster();
-//        subGroupMaster();
-//        accountMaster();
+        if(s.equals("GROUPMASTER"))
+            groupMaster();
+        if(s.equals("SUBGROUPMASTER"))
+            subGroupMaster();
+        if(s.equals("ACCOUNTMASTER"))
+            accountMaster();
+        if(s.equals("DIVISIONMASTER"))
+            divisionMaster();
+        if(s.equals("CATAGORYMASTER"))
+            catagoryMaster();
+        if(s.equals("UNITMASTER"))
+            unitMaster();
+        if(s.equals("ITEMMASTER"))
+            itemMaster();
         add(back);
         add(add);
-        setLayout(new FlowLayout(FlowLayout.LEFT, 30, 20));
-        setSize(500, 600);
+        setLayout(new FlowLayout(FlowLayout.CENTER));
+        pack();
         setVisible(true);
     }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        new addPanel();
+        new addPanel("ITEMMASTER");
     }
 }
