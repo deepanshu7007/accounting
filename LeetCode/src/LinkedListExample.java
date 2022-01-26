@@ -34,7 +34,7 @@ public class LinkedListExample {
         Scanner s = new Scanner(System.in);
         ListNode headNode = new ListNode();
         ListNode prevNode = new ListNode();
-        ListNode lastNode = new ListNode();
+        // ListNode endNode = new ListNode();
         ListNode tempNode = new ListNode(); // Writting just to test git 
         headNode = null;
         
@@ -62,5 +62,6 @@ public class LinkedListExample {
            tempNode=tempNode.link;
         }
         System.out.print("End");
+        s.close();
     }
 }
