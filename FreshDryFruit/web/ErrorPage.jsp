@@ -18,7 +18,7 @@
 
     <title>Error Page</title>
   </head>
-  <body>
+  
       <div class="container text-center"><img src="Assets/404_image.png">
     <h1 class="container display-5 ">Something went wrong...</h1>
     <a class = "btn btn-primary text-white btn-lg mt-3"  href="HomePage.jsp"> Home Page</a>

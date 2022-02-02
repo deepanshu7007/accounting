@@ -29,7 +29,12 @@ public class LoginServlet extends HttpServlet {
         UserDao dao = new UserDao(ConnectionProvider.getConnection());
         User u = dao.getUserByEmailAndPassword(userName, userPassword);
         if (u == null) {
-            Message msg = new Message("Invalid details try with another!", "error", "error-alert");
+            Message msg = new Message("Invalid details try with another!", "error", "alert-danger");
+            
+            HttpSession s = request.getSession();
+                     response.sendRedirect("LoginPage.jsp");
+            s.setAttribute("msg",msg);
+            
         } else {
             System.out.println((new StringBuilder()).append("current user name is :").append(u.getName()).toString());
             HttpSession s = request.getSession();
