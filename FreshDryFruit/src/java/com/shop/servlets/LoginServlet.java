@@ -1,22 +1,20 @@
 package com.shop.servlets;
 
 import com.shop.dao.UserDao;
+import com.shop.entities.Message;
 import com.shop.entities.User;
 import com.shop.helper.ConnectionProvider;
 import java.io.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-public class LoginServlet extends HttpServlet
-{
+public class LoginServlet extends HttpServlet {
 
-    public LoginServlet()
-    {
+    public LoginServlet() {
     }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         PrintWriter out;
         response.setContentType("text/html;charset=UTF-8");
         out = response.getWriter();
@@ -30,11 +28,9 @@ public class LoginServlet extends HttpServlet
         String userPassword = request.getParameter("password");
         UserDao dao = new UserDao(ConnectionProvider.getConnection());
         User u = dao.getUserByEmailAndPassword(userName, userPassword);
-        if(u == null)
-        {
-            out.println("Invalid details please enter the valid crediantials");
-        } else
-        {
+        if (u == null) {
+            Message msg = new Message("Invalid details try with another!", "error", "error-alert");
+        } else {
             System.out.println((new StringBuilder()).append("current user name is :").append(u.getName()).toString());
             HttpSession s = request.getSession();
             s.setAttribute("currentUser", u);
@@ -46,19 +42,16 @@ public class LoginServlet extends HttpServlet
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    public String getServletInfo()
-    {
+    public String getServletInfo() {
         return "Short description";
     }
 }
