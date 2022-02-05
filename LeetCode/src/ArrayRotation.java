@@ -59,6 +59,7 @@ public class ArrayRotation {
             r--;
         }
         System.out.println("\n\n");
+        pr
         for(int i=0;i<nums.length;i++)
         System.out.print(nums[i]+" ");
     }
